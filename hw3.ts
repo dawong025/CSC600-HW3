@@ -43,7 +43,7 @@ https://docs.google.com/document/d/1RJ66oXuASPTlm4Oc040oKW7Gt9L6Qs5ceV5QE3Trpdo/
 ** ============================================================================ */
 
 export const HONOR_PLEDGE = "I pledge on my honor that this assignment is my own work.";
-export const SIGNATURE = "<your-full-name-here>"; // TODO: FILL ME IN
+export const SIGNATURE = "Darren Wong"; // TODO: FILL ME IN
 
 // If you used resources, please list them here
 export const RESOURCES_CONSULTED = [
@@ -116,9 +116,43 @@ Example 5:
 ** ----------------------------------------------------- */
 
 export function splitArrayOnce<T>(arr: T[]): [T[], T[]] {
-    throw Error("TODO");
+    let midpt = Math.floor(arr.length/2);
+    let copyArray1: T[] = [];
+    let copyArray2: T[] = [];
+
+    if(arr.length == 0){
+        return [[], []];
+    }
+    else if(arr.length == 1){
+        return [[arr[0]], []];
+    }
+    else if(arr.length % 2 == 0){
+        for(let i = 0; i < midpt; i++){
+            copyArray1[i] = arr[i];
+        }
+        for(let j = 0; j < arr.length - midpt + 1; j++){
+            copyArray2[j] = arr[midpt++];
+            
+        }
+        return [copyArray1, copyArray2];
+    }
+    else{
+        for(let i = 0; i <= midpt; i++){
+            copyArray1[i] = arr[i];
+        }
+        for(let j = 0; j < arr.length - midpt; j++){
+            copyArray2[j] = arr[++midpt];
+        }
+        return [copyArray1, copyArray2];
+    }
 }
 
+//Q1a Testing Code
+// console.log("Q1a. [" + splitArrayOnce([])[0]+"]["+ splitArrayOnce([])[1] +"]");
+// console.log("Q1a. [" + splitArrayOnce([1])[0]+"]["+splitArrayOnce([1])[1]+"]");
+// console.log("Q1a. [" + splitArrayOnce(["hello", "world"])[0]+"]["+splitArrayOnce(["hello", "world"])[1]+"]");
+// console.log("Q1a. [" + splitArrayOnce(["csc600", "is", "fun"])[0]+"]["+splitArrayOnce(["csc600", "is", "fun"])[1]+"]");
+// console.log("Q1a. [" + splitArrayOnce([3, 2, 1, 4])[0]+"]["+splitArrayOnce([3, 2, 1, 4])[1]+"]");
 
 /* ----------------------------------------------------- **
 ### Problem 1b (10 pts):
@@ -157,10 +191,38 @@ Example 5:
 ** ----------------------------------------------------- */
 
 export function splitArrayTwice<T>(arr: T[]): [[T[], T[]], [T[], T[]]] {
-    throw Error("TODO");
+    let halfArray1 = splitArrayOnce(arr)[0];
+    let halfArray2 = splitArrayOnce(arr)[1];
+
+    return [splitArrayOnce(halfArray1), splitArrayOnce(halfArray2)];
 }
 
+//Q1b Testing Code
+// console.log("Q1b. [" + splitArrayTwice([])[0][0] + "]["
+//                      + splitArrayTwice([])[0][1] + "]["
+//                      + splitArrayTwice([])[1][0] + "]["
+//                      + splitArrayTwice([])[1][1] + "]");
 
+// console.log("Q1b. [" + splitArrayTwice([1])[0][0] + "]["
+//                      + splitArrayTwice([1])[0][1] + "]["
+//                      + splitArrayTwice([1])[1][0] + "]["
+//                      + splitArrayTwice([1])[1][1] + "]");
+
+// console.log("Q1b. [" + splitArrayTwice(["hello", "world"])[0][0] + "]["
+//                      + splitArrayTwice(["hello", "world"])[0][1] + "]["
+//                      + splitArrayTwice(["hello", "world"])[1][0] + "]["
+//                      + splitArrayTwice(["hello", "world"])[1][1] + "]");
+
+// console.log("Q1b. [" + splitArrayTwice(["csc600", "is", "fun"])[0][0] + "]["
+//                      + splitArrayTwice(["csc600", "is", "fun"])[0][1] + "]["
+//                      + splitArrayTwice(["csc600", "is", "fun"])[1][0] + "]["
+//                      + splitArrayTwice(["csc600", "is", "fun"])[1][1] + "]");
+
+// console.log("Q1b. [" + splitArrayTwice([3, 2, 1, 4])[0][0] + "]["
+//                      + splitArrayTwice([3, 2, 1, 4])[0][1] + "]["
+//                      + splitArrayTwice([3, 2, 1, 4])[1][0] + "]["
+//                      + splitArrayTwice([3, 2, 1, 4])[1][1] + "]");
+                     
 /* ==========================================================================  **
 ## Problem 2: Recursive functions with arrays (25 pts)
 
@@ -313,10 +375,51 @@ Example 5:
 ** ----------------------------------------------------- */
 
 export function splitArray<T>(arr: T[]): NestedArray<T> {
-    throw Error("TODO");
+    if(arr.length === 0){
+        let nestedArr: NestedArray<T> = {
+            tag: "LEAF"
+        }
+        return nestedArr;
+    }
+    else if(arr.length === 1){
+        let tr =
+            mkNANode(
+                arr[0],
+                mkNALeaf(),
+                mkNALeaf()
+            );
+        return tr;
+    }
+    else{
+        let copyArr: T[] = [];
+        for(const x of arr){
+            copyArr.push(x);
+        }
+
+        let halfArray1 = splitArrayOnce(copyArr)[0];
+        let halfArray2 = splitArrayOnce(copyArr)[1];
+
+        let tr =
+        mkNANode(
+            halfArray1[halfArray1.length - 1],
+            splitArray(halfArray1.slice(0,-1)),
+            splitArray(halfArray2)
+        );
+        return tr;
+    }
 }
 
-
+//Q2 Testing Code
+// console.log("Q2.");
+// console.log(splitArray([]));
+// console.log("-----------------------");
+// console.log(splitArray([1]));
+// console.log("-----------------------");
+// console.log(splitArray(["hello", "world"]));
+// console.log("-----------------------");
+// console.log(splitArray(["csc600", "is", "fun"]));
+// console.log("-----------------------");
+// console.log(splitArray([3, 2, 1, 4]));
 
 /* ==========================================================================  **
 ## Problem 3: Recursive functions with trees (55 pts)
@@ -470,9 +573,30 @@ Example 5:
 ** ----------------------------------------------------- */
 
 export function heightNaryTree<T>(naTr: NaryTree<T>): number {
-    throw Error("TODO");
+    switch(naTr.tag){
+        case "LEAF": {
+            return 0;
+        }
+        case "NODE": {
+            let otherHeight = 0;
+            for(let i = 0; i < naTr.restChildren.length; i++){
+                let childHeight = heightNaryTree(naTr.restChildren[i]);
+
+                if(childHeight > otherHeight){
+                    otherHeight = childHeight;
+                }
+            }
+            return 1 + Math.max(heightNaryTree(naTr.firstChild), otherHeight);
+        }
+    }
 }
 
+//Q3a Testing Code
+// console.log("Q3a. " + heightNaryTree(ntr1));
+// console.log("Q3a. " + heightNaryTree(ntr2));
+// console.log("Q3a. " + heightNaryTree(ntr3));
+// console.log("Q3a. " + heightNaryTree(ntr4));
+// console.log("Q3a. " + heightNaryTree(ntr5));
 
 /* ----------------------------------------------------- **
 ### Problem 3b (20 pts):
@@ -527,9 +651,33 @@ Example 5:
 ** ----------------------------------------------------- */
 
 export function mapNaryTree<T, U>(naTr: NaryTree<T>, f: (arg: T) => U): NaryTree<U> {
-    throw Error("TODO");
+    switch(naTr.tag){
+        case "LEAF": {
+            let leaf: NaryTree<U> = mkNaryLeaf();
+            return leaf;
+        }
+        case "NODE": {
+            let copyArr: NaryTree<U>[] = [];
+            copyArr.push(mapNaryTree(naTr.firstChild, f));
+            for(let i = 0; i < naTr.restChildren.length; i++){
+                copyArr.push(mapNaryTree(naTr.restChildren[i], f));
+            }
+            return mkNaryNode(f(naTr.contents), copyArr);
+        }
+    }
 }
 
+//Q3b Testing Code
+// console.log("Q3b.");
+// console.log(mapNaryTree(ntr1, (x) => x + 1));
+// console.log("-----------------------");
+// console.log(mapNaryTree(ntr2, (x) => x + 1));
+// console.log("-----------------------");
+// console.log(mapNaryTree(ntr3, (x) => 2*x));
+// console.log("-----------------------");
+// console.log(mapNaryTree(ntr4, (x) => 1));
+// console.log("-----------------------");
+// console.log(mapNaryTree(ntr5, (x) => x + 2));
 
 /* ----------------------------------------------------- **
 ### Problem 3c (20 pts):
@@ -595,5 +743,31 @@ Example 5:
 ** ----------------------------------------------------- */
 
 export function nestedArrayToNaryTree<T>(na: NestedArray<T>): NaryTree<T> {
-    throw Error("TODO");
+    switch(na.tag){
+        case "LEAF": {
+            let leaf: NaryTree<T> = mkNaryLeaf();
+            return leaf;
+        }
+        case "NODE": {
+            let copyArray: NestedArray<T>[] = [na.left, na.right];
+            let naryArray: NaryTree<T>[] = [];
+            for(let i = 0; i < copyArray.length; i++){
+                naryArray.push(nestedArrayToNaryTree(copyArray[i]));
+            }
+            return mkNaryNode(na.contents, naryArray);
+        }
+    }
 }
+
+//Q3c Testing Code
+// console.log("Q3c. ");
+// console.log(nestedArrayToNaryTree(tr1));
+// console.log("-----------------------");
+// console.log(nestedArrayToNaryTree(tr2));
+// console.log("-----------------------");
+// console.log(nestedArrayToNaryTree(tr3));
+// console.log("-----------------------");
+// console.log(nestedArrayToNaryTree(tr4));
+// console.log("-----------------------");
+// console.log(nestedArrayToNaryTree(tr5));
+// console.log("-----------------------");
